@@ -12,7 +12,7 @@ e.g.
 `BeatSaberSongExtractor "C:\Users\bab178\Downloads\ZippedSongs" "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\CustomLevels"`
 
 
-1. Gets custom songs `.zip` files from `zippedLevelsDirectoryPath` e.g. `C:\Users\Name\`
+1. Gets custom songs `.zip` files from `zippedLevelsDirectoryPath`
 ```
 zippedLevelsDirectoryPath
 └───  4af (T Custom Song Name 1).zip
@@ -49,3 +49,5 @@ customLevelsDirectoryPath
      │   Normal.dat
 ...
 ```
+
+![Reorganized after execution](/images/after.jpg?raw=true "Reorganized after execution")
