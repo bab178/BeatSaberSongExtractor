@@ -50,6 +50,11 @@ customLevelsDirectoryPath
 ...
 ```
 
+
+## Before execution:
+
+![Before execution](/images/before.jpg?raw=true)
+
 ## Reorganized after execution:
 
 ![Reorganized after execution](/images/after.jpg?raw=true)
