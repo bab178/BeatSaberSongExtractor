@@ -50,4 +50,6 @@ customLevelsDirectoryPath
 ...
 ```
 
-![Reorganized after execution](/images/after.jpg?raw=true "Reorganized after execution")
+## Reorganized after execution:
+
+![Reorganized after execution](/images/after.jpg?raw=true)
