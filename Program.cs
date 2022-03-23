@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 internal class BeatSaberSongExtractor
 {
+    private static readonly string _userProfileDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    private static readonly string _playerDataFilePath = Path.Combine(_userProfileDirectoryPath, @"LocalLow\Hyperbolic Magnetism\Beat Saber\PlayerData.dat");
     private static void Main(string[] args)
     {
         string zippedLevelsDirectoryPath;
@@ -28,12 +33,75 @@ internal class BeatSaberSongExtractor
             return;
         }
 
+        SyncLocalPlayerData(_playerDataFilePath);
         ClearDirectory(customLevelsDirectoryInfo);
         UnzipCustomSongDirectories(zippedLevelsDirectoryPath, customLevelsDirectoryPath);
         AlphabetizeDirectoryNames(customLevelsDirectoryInfo);
 
         Console.WriteLine("Success. Press any key to exit...");
         Console.ReadKey();
+    }
+
+    private static void SyncLocalPlayerData(string playerDataFilePath)
+    {
+        if (!File.Exists(playerDataFilePath))
+        {
+            Console.WriteLine($"{nameof(playerDataFilePath)} file does not exist at:  {playerDataFilePath}");
+            return;
+        }
+
+        string fileContents;
+        try
+        {
+            fileContents = File.ReadAllText(playerDataFilePath);
+            Console.WriteLine($"Loaded file contents for {nameof(playerDataFilePath)}...");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to get file contents for {nameof(playerDataFilePath)} : {ex.Message}");
+            return;
+        }
+
+        RootObject playerDataRootObject;
+        try
+        {
+            playerDataRootObject = JsonSerializer.Deserialize<RootObject>(fileContents);
+            Console.WriteLine($"Deserialzied data from {nameof(playerDataFilePath)}...");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to deserialize data from {nameof(playerDataFilePath)} : {ex.Message}");
+            return;
+        }
+
+        var localPlayer = playerDataRootObject.localPlayers[0];
+
+        Console.WriteLine($"Syncing local highscores...");
+        // TODO: Get all custom song names and map to localPlayer.levelsStatsData
+        //foreach (var levelStatData in localPlayer.levelsStatsData)
+        //{
+
+        //}
+
+        Console.WriteLine($"Syncing favorites...");
+        var newFavorites = new List<string>();
+        foreach (string favoriteLevelId in localPlayer.favoritesLevelIds)
+        {
+            if (IsReorderedLevelId(favoriteLevelId))
+            {
+                // TODO: Map these to new level ids
+                Console.WriteLine(favoriteLevelId);
+            }
+            else
+            {
+                newFavorites.Add(favoriteLevelId);
+            }
+        }
+    }
+
+    private static bool IsReorderedLevelId(string levelId)
+    {
+        return Regex.IsMatch(levelId, @"^custom_level_(\d){1,4}\s-\s.*");
     }
 
     private static void ClearDirectory(DirectoryInfo dir)
