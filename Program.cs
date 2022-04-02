@@ -141,13 +141,20 @@ internal class BeatSaberSongExtractor
 
     private static void AlphabetizeDirectoryNames(DirectoryInfo dir)
     {
-        int padAmount = dir.GetDirectories().Length;
-        int count = 1;
+        int padAmount = (int)Math.Floor(Math.Log10(dir.GetDirectories().Length) + 1);
+        int count = 0;
         Console.WriteLine("Reordering directories by level name alphabetically...");
         foreach (var extractInfo in dir.GetDirectories().OrderBy(e => e.Name.Split("(")[1]))
         {
-            Directory.Move(extractInfo.FullName, $"{dir.FullName}/{count.ToString().PadLeft(padAmount, '0')} - {extractInfo.Name}");
-            count++;
+            try
+            {
+                Directory.Move(extractInfo.FullName, $"{dir.FullName}/{count.ToString().PadLeft(padAmount, '0')} - {extractInfo.Name}");
+                count++;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Failed to move {extractInfo.Name} : {e.Message}");
+            }
         }
 
         Console.WriteLine($"{count} levels processed.");
