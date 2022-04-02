@@ -129,7 +129,7 @@ internal class BeatSaberSongExtractor
                 Console.WriteLine($"Creating {filename}");
                 try
                 {
-                    System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, path);
+                    System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, path, true);
                 }
                 catch (Exception ex)
                 {
